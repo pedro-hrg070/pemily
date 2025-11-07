@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camily & Pedro | Nosso Casamento</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --font-script: 'Alex Brush', cursive;
+            --font-body: 'Montserrat', sans-serif;
+            --color-primary-green: #6d8b74;
+            --color-dark-text: #000000;
+            --color-bg: #fdfdfd;
+            --color-light-gray: #f4f4f4;
+        }
+        body {
+            font-family: var(--font-body );
+            color: var(--color-dark-text);
+            background-color: var(--color-bg);
+            position: relative;
+            overflow-x: hidden;
+        }
+        .font-script { font-family: var(--font-script); }
+        .text-primary-green { color: var(--color-primary-green); }
+        .bg-primary-green { background-color: var(--color-primary-green); }
+        
+        body::before, body::after {
+            content: '';
+            position: fixed;
+            width: 300px; height: 300px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            z-index: 1000; 
+            opacity: 0.7;
+            pointer-events: none;
+            filter: drop-shadow(3px 3px 5px rgba(0,0,0,0.15));
+        }
+        body::before {
+            background-image: url('ramod.png');
+            top: -80px; /* AJUSTADO */
+            right: -90px; /* AJUSTADO */
+        }
+        body::after {
+            background-image: url('ramoe.png');
+            bottom: -80px; /* AJUSTADO */
+            left: -90px; /* AJUSTADO */
+        }
+
+        .btn {
+            background-color: var(--color-primary-green);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.3s, transform 0.2s;
+            display: inline-flex; 
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem; 
+            text-align: center;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #5a7462;
+            transform: translateY(-2px);
+        }
+        .btn:disabled {
+            background-color: #9db2a4;
+            cursor: not-allowed;
+            transform: none;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in { animation: fadeIn 1s ease-out forwards; }
+
+        #guest-photos-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        #guest-photos-gallery img {
+            width: 100%; height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        #guest-photos-gallery img:hover { transform: scale(1.05); }
+
+        /* --- CSS DO CRONÔMETRO AJUSTADO E ROBUSTO --- */
+        .countdown-container {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        .time-unit { text-align: center; }
+        .flip-card {
+            position: relative;
+            display: inline-flex;
+            flex-direction: column;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border-radius: 0.7rem;
+            font-size: 2rem;
+            font-weight: 300;
+            line-height: 1;
+            background: #fff;
+            transition: width 0.4s ease;
+        }
+        .flip-card.days { width: 3.2em; }
+        .flip-card.days.two-digits { width: 2.2em; }
+        .flip-card:not(.days) { width: 2.2em; }
+
+        .top, .bottom, .flip-card .top-flip, .flip-card .bottom-flip {
+            height: 0.75em;
+            padding: 0 0.2em;
+            overflow: hidden;
+            text-align: center;
+            font-variant-numeric: tabular-nums;
+            backface-visibility: hidden;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        .top, .flip-card .top-flip {
+            background-color: #f7f7f7;
+            color: var(--color-dark-text);
+            border-top-left-radius: 0.7rem;
+            border-top-right-radius: 0.7rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            align-items: flex-start;
+        }
+        .bottom, .flip-card .bottom-flip {
+            background-color: white;
+            color: var(--color-dark-text);
+            border-bottom-left-radius: 0.7rem;
+            border-bottom-right-radius: 0.7rem;
+            align-items: flex-end;
+        }
+        .flip-card .top-flip {
+            position: absolute;
+            left: 0; top: 0;
+            animation: flip-top 0.6s ease-in;
+            transform-origin: bottom;
+        }
+        @keyframes flip-top { 100% { transform: rotateX(90deg); } }
+        .flip-card .bottom-flip {
+            position: absolute;
+            left: 0; bottom: 0;
+            transform: rotateX(90deg);
+            animation: flip-bottom 0.6s ease-out 0.6s;
+            transform-origin: top;
+        }
+        @keyframes flip-bottom { 100% { transform: rotateX(0deg); } }
+        .countdown-label {
+            margin-top: 0.6rem; 
+            font-size: 0.7rem; 
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #b0b0b0;
+        }
+        
+        /* --- ESTILOS DO BLOCO DE DATA --- */
+        .date-block { margin-top: 2.5rem; }
+        .date-block .month { font-size: 1rem; text-transform: uppercase; letter-spacing: 0.2em; margin-bottom: 0.5rem; }
+        .date-details { display: flex; justify-content: center; align-items: center; gap: 1rem; }
+        .date-details .day-of-week, .date-details .time {
+            border-top: 1px solid var(--color-dark-text);
+            border-bottom: 1px solid var(--color-dark-text);
+            padding: 0.25rem 0;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        .date-details .day-number { font-size: 2.5rem; font-weight: 600; line-height: 1; padding: 0 0.5rem; }
+        .date-block .year { margin-top: 0.5rem; font-size: 1.25rem; letter-spacing: 0.5em; }
+    </style>
+</head>
+<body class="antialiased font-body">
+
+    <header class="p-4 bg-white/80 backdrop-blur-sm sticky top-0 z-50 shadow-sm">
+        <nav class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 py-2">
+            <div>
+                 <a href="#" aria-label="Início">
+                    <img src="cp.PNG" alt="Logo C & P" class="h-16 w-auto">
+                 </a>
+            </div>
+            <div class="flex flex-wrap justify-center md:justify-end items-center gap-x-4 md:gap-x-8 text-lg font-semibold">
+                <a href="#cerimonia" class="hover:text-primary-green transition">A Cerimónia</a>
+                <a href="#manual" class="hover:text-primary-green transition">Manual</a>
+                <a href="#presenca" class="hover:text-primary-green transition">Presença</a>
+                <a href="#presentes" class="hover:text-primary-green transition">Presentes</a>
+                <a href="#mural" class="hover:text-primary-green transition">Mural de Fotos</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="text-center py-20 md:py-32 px-4">
+            <div class="fade-in">
+                <div class="flex justify-center items-center gap-4 md:gap-8">
+                    <span class="font-script text-5xl md:text-7xl text-dark-text">Camily Vitória</span>
+                    <span class="font-script text-3xl md:text-5xl text-dark-text/80">&</span>
+                    <span class="font-script text-5xl md:text-7xl text-dark-text">Pedro Henrique</span>
+                </div>
+                <div class="mt-12">
+                    <h4 class="tracking-widest text-primary-green uppercase text-sm mb-4">Contagem regressiva para o grande dia</h4>
+                    <div id="countdown" class="countdown-container">
+                        <div class="time-unit">
+                            <div class="flip-card days" data-days-container><div class="top">0</div><div class="bottom">0</div></div>
+                            <p class="countdown-label">Dias</p>
+                        </div>
+                        <div class="time-unit">
+                            <div class="flip-card" data-hours-container><div class="top">00</div><div class="bottom">00</div></div>
+                            <p class="countdown-label">Horas</p>
+                        </div>
+                        <div class="time-unit">
+                            <div class="flip-card" data-minutes-container><div class="top">00</div><div class="bottom">00</div></div>
+                            <p class="countdown-label">Minutos</p>
+                        </div>
+                        <div class="time-unit">
+                            <div class="flip-card" data-seconds-container><div class="top">00</div><div class="bottom">00</div></div>
+                            <p class="countdown-label">Segundos</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="date-block">
+                    <div class="date-details">
+                        <span class="day-of-week">Sábado</span>
+                        <span class="day-number">17</span>
+                        <span class="time">Janeiro</span>
+                    </div>
+                    <div class="year">2 0 2 6</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="cerimonia" class="py-20 px-4 bg-light-gray">
+            <div class="container mx-auto text-center max-w-4xl fade-in">
+                <h2 class="font-script text-5xl md:text-6xl text-primary-green mb-8">O Nosso Grande Dia!</h2>
+                <p class="text-xl mb-4">Convidamos você para celebrar conosco a cerimônia do nosso casamento.</p>
+                <div class="text-2xl font-semibold space-y-2">
+                    <p>Sábado, 17 de Janeiro de 2026, às 17h30</p>
+                    <p>Sítio 3 Figueiras</p>
+                    <p class="text-lg">Estr. Willy Moehlecke, 1501 - Lomba Grande, Novo Hamburgo - RS</p>
+                </div>
+                <div class="mt-8 mb-8 grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <img src="sitio1.jpg" alt="Foto do Sítio 1" class="gallery-image w-full h-48 object-cover rounded-lg shadow-md cursor-pointer hover:scale-105 transition-transform">
+                    <img src="sitio2.jpg" alt="Foto do Sítio 2" class="gallery-image w-full h-48 object-cover rounded-lg shadow-md cursor-pointer hover:scale-105 transition-transform">
+                    <img src="sitio3.jpg" alt="Foto do Sítio 3" class="gallery-image w-full h-48 object-cover rounded-lg shadow-md cursor-pointer hover:scale-105 transition-transform">
+                    <img src="sitio4.jpg" alt="Foto do Sítio 4" class="gallery-image w-full h-48 object-cover rounded-lg shadow-md cursor-pointer hover:scale-105 transition-transform">
+                </div>
+                <div class="rounded-lg overflow-hidden shadow-lg">
+                    <iframe src="https://maps.google.com/maps?q=S%C3%8DTIO%203%20FIGUEIRAS%2C%20Estr.%20Willy%20Moehlecke%2C%201501%20-%20Lomba%20Grande%2C%20Novo%20Hamburgo%20-%20RS&t=&z=15&ie=UTF8&iwloc=&output=embed" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+                <div class="mt-6 flex flex-col sm:flex-row justify-center items-center gap-4">
+                    <a href="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3464.673967484924!2d-51.0772056848924!3d-29.72911298199658!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9519416538555555%3A0x86c2e3db79f6c77!2sS%C3%ADtio%203%20Figueiras!5e0!3m2!1spt-BR!2sbr!4v1668528646738!5m2!1spt-BR!2sbr8" target="_blank" rel="noopener noreferrer" class="btn w-full sm:w-auto">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><title>Ícone de Localização</title><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"></path></svg>
+                        <span>Ver no Google Maps</span>
+                    </a>
+                    <a href="https://www.waze.com/ul?ll=-29.72911298,-51.07720568&navigate=yes" target="_blank" rel="noopener noreferrer" class="btn w-full sm:w-auto">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><title>Ícone do Waze</title><path d="M12 0C7.3 0 3.4 3.8 3.4 8.5c0 2.2 1.4 4.3 2.6 5.3 1.3 1 2 1.9 2 2.7v.2c0 .6.4 1 1 1h6c.6 0 1-.4 1-1v-.2c0-.8.7-1.7 2-2.7 1.2-1 2.6-3.1 2.6-5.3C20.6 3.8 16.7 0 12 0zm-2.8 11.2c-.8 0-1.4-.6-1.4-1.4s.6-1.4 1.4-1.4 1.4.6 1.4 1.4-.6 1.4-1.4 1.4zm5.6 0c-.8 0-1.4-.6-1.4-1.4s.6-1.4 1.4-1.4 1.4.6 1.4 1.4-.6 1.4-1.4 1.4z"></path></svg>
+                        <span>Navegar com Waze</span>
+                    </a>
+                    <a href="https://m.uber.com/ul/?action=setPickup&dropoff[formatted_address]=S%C3%ADtio%203%20Figueiras%2C%20Estr.%20Willy%20Moehlecke%2C%201501%2C%20Novo%20Hamburgo&dropoff[latitude]=-29.729112&dropoff[longitude]=-51.077205" target="_blank" rel="noopener noreferrer" class="btn w-full sm:w-auto">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><title>Ícone do Uber</title><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-12h2v4h4v2h-4v4h-2v-4H7v-2h4V8z"></path></svg>
+                        <span>Chamar Uber</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="manual" class="py-20 px-4">
+            <div class="container mx-auto text-center max-w-4xl fade-in">
+                <h2 class="font-script text-5xl md:text-6xl text-primary-green mb-12">Manual dos Convidados</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-10 text-left">
+                    <div class="flex items-start space-x-4"><div class="text-2xl text-primary-green">✓</div><div><h3 class="font-semibold text-lg">Confirme sua presença</h3><p class="text-gray-600">É fundamental para a nossa organização. Contamos com você!</p></div></div>
+                    <div class="flex items-start space-x-4"><div class="text-2xl text-primary-green">✓</div><div><h3 class="font-semibold text-lg">Chegue no horário</h3><p class="text-gray-600">A cerimónia começará pontualmente às 17h30m para aproveitarmos cada segundo. Portanto, não se atrase!</p></div></div>
+                    <div class="flex items-start space-x-4"><div class="text-2xl text-primary-green">✓</div><div><h3 class="font-semibold text-lg">Não convide outras pessoas</h3><p class="text-gray-600">A nossa lista foi pensada com muito carinho e o convite é individual.</p></div></div>
+                    <div class="flex items-start space-x-4"><div class="text-2xl text-primary-green">✓</div><div><h3 class="font-semibold text-lg">Não atrapalhe a equipe de foto e vídeo</h3><p class="text-gray-600">Confie nos profissionais! Teremos muitas oportunidades para fotos.</p></div></div>
+                    <div class="flex items-start space-x-4"><div class="text-2xl text-primary-green">✓</div><div><h3 class="font-semibold text-lg">Branco é a cor da noiva</h3><p class="text-gray-600">Pedimos a gentileza de escolher outra cor para o seu traje neste dia.</p></div></div>
+                    <div class="flex items-start space-x-4"><div class="text-2xl text-primary-green">✓</div><div><h3 class="font-semibold text-lg">Deixe o seu celular no silencioso</h3><p class="text-gray-600">Conecte-se ao momento e desfrute da cerimônia sem interrupções.</p></div></div>
+                    <div class="flex items-start space-x-4"><div class="text-2xl text-primary-green">✓</div><div><h3 class="font-semibold text-lg">Participe da cerimônia</h3><p class="text-gray-600">A sua presença e as suas boas energias são muito importantes para nós.</p></div></div>
+                    <div class="flex items-start space-x-4"><div class="text-2xl text-primary-green">✓</div><div><h3 class="font-semibold text-lg">Não leve a decoração para casa</h3><p class="text-gray-600">Cada detalhe foi pensado para compor o cenário do nosso grande dia.</p></div></div>
+                    <div class="flex items-start space-x-4"><div class="text-2xl text-primary-green">✓</div><div><h3 class="font-semibold text-lg">Não vá embora sem dar um abraço nos noivos</h3><p class="text-gray-600">Queremos celebrar e registar este momento com você!</p></div></div>
+                    <div class="flex items-start space-x-4"><div class="text-2xl text-primary-green">✓</div><div><h3 class="font-semibold text-lg">Aguarde a liberação da mesa de doces</h3><p class="text-gray-600">Os doces são uma parte especial da festa, vamos aproveitar juntos.</p></div></div>
+                    <div class="flex items-start space-x-4"><div class="text-2xl text-primary-green">✓</div><div><h3 class="font-semibold text-lg">Aproveite muito</h3><p class="text-gray-600">Divirta-se, dance, celebre e crie memórias inesquecíveis com a gente e não se esqueça de tirar muitas fotos e nos marcar no instagram.</p></div></div>
+                    <div class="flex items-start space-x-4"><div class="text-2xl text-primary-green">✓</div><div><h3 class="font-semibold text-lg">Não faça comentários negativos</h3><p class="text-gray-600">Vamos manter a energia positiva e celebrar o amor e a felicidade.</p></div></div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="presenca" class="py-20 px-4 bg-light-gray">
+            <div class="container mx-auto text-center max-w-lg fade-in">
+                <h2 class="font-script text-5xl md:text-6xl text-primary-green mb-8">Confirme a sua Presença</h2>
+                <p class="text-lg mb-6">A sua presença tornará o nosso dia ainda mais especial. Por favor, confirme até 15/12/2025.</p>
+                <form id="rsvp-form" class="space-y-4">
+                    <input id="guest-name" name="Nome" type="text" placeholder="O seu nome completo" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-green focus:outline-none" required>
+                    <button type="submit" class="btn w-full">Confirmar Presença</button>
+                </form>
+                <p id="rsvp-feedback" class="mt-4 text-lg font-semibold text-primary-green"></p>
+            </div>
+        </section>
+
+        <section id="presentes" class="py-20 px-4">
+            <div class="container mx-auto text-center max-w-lg fade-in">
+                <h2 class="font-script text-5xl md:text-6xl text-primary-green mb-8">Lista de Presentes</h2>
+                <p class="text-lg mb-6">A sua presença é o nosso maior presente! Mas, se desejar abençoar-nos de outra forma, aqui está uma opção de presente em dinheiro.</p>
+                <div class="bg-white p-6 rounded-lg shadow-md inline-block">
+                    <img src="pix.PNG" alt="QR Code PIX" class="mx-auto rounded-md w-64 h-64">
+                    <p class="mt-4 font-semibold">Chave PIX (E-mail ):</p>
+                    <p class="text-lg">camilyepedro@email.com</p>
+                    <p class="text-xs mt-2 text-gray-500">(Chave de exemplo, por favor, substitua)</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="mural" class="py-20 px-4 bg-light-gray">
+            <div class="container mx-auto text-center max-w-4xl fade-in">
+                <h2 class="font-script text-5xl md:text-6xl text-primary-green mb-8">Mural de Fotos</h2>
+                <p class="text-lg mb-6">Tire muitas fotos e partilhe os seus registos aqui! Ajude-nos a eternizar cada momento.</p>
+                <div class="mb-8">
+                    <label for="photo-upload" class="btn cursor-pointer">Enviar uma Foto</label>
+                    <input type="file" id="photo-upload" class="hidden" accept="image/*">
+                    <p id="upload-status" class="mt-2 text-sm text-gray-600"></p>
+                </div>
+                <div id="guest-photos-gallery"></div>
+                <div id="loading-gallery" class="text-center py-8">A carregar fotos...</div>
+            </div>
+        </section>
+
+        <section id="fotos-oficiais" class="py-20 px-4">
+            <div class="container mx-auto text-center max-w-4xl fade-in">
+                <h2 class="font-script text-5xl md:text-6xl text-primary-green mb-8">As Nossas Fotos</h2>
+                <p class="text-lg mb-8">Em breve, os registos oficiais do nosso grande dia estarão aqui.</p>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <img src="https://placehold.co/600x400/e8e8e8/cccccc?text=Foto+1" class="rounded-lg shadow-md" alt="Espaço reservado para foto oficial 1">
+                    <img src="https://placehold.co/600x400/e8e8e8/cccccc?text=Foto+2" class="rounded-lg shadow-md" alt="Espaço reservado para foto oficial 2">
+                    <img src="https://placehold.co/600x400/e8e8e8/cccccc?text=Foto+3" class="rounded-lg shadow-md" alt="Espaço reservado para foto oficial 3">
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="text-center py-12 px-4">
+        <p class="font-script text-4xl text-primary-green">Com carinho, Camily & Pedro</p>
+        <p class="mt-4 text-sm text-gray-500">"Acima de tudo, porém, revistam-se do amor, que é o elo perfeito." - Colossenses 3:14</p>
+    </footer>
+
+    <div id="lightbox-modal" class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-80 flex justify-center items-center z-[2000] hidden transition-opacity duration-300">
+        <span id="lightbox-close" class="absolute top-4 right-6 text-white text-5xl font-bold cursor-pointer">×</span>
+        <img id="lightbox-image" src="" alt="Imagem Ampliada" class="max-w-[90vw] max-h-[90vh] object-contain">
+    </div>
+    
+    <script type="module">
+        // Importações do Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
+
+        // --- CONFIGURAÇÃO DO FIREBASE ---
+        const firebaseConfig = {
+          apiKey: "AIzaSyBFv6GG8xJ0Rn0UaGrQrDzSmI5W62YVBX0",
+          authDomain: "casamento-pemily.firebaseapp.com",
+          projectId: "casamento-pemily",
+          storageBucket: "casamento-pemily.appspot.com",
+          messagingSenderId: "171719207385",
+          appId: "1:171719207385:web:cef592cf9a04f9400151c8",
+          measurementId: "G-LC02VEPYZL"
+        };
+        
+        // --- INICIALIZAÇÃO E VERIFICAÇÃO DO FIREBASE ---
+        if (!firebaseConfig.apiKey || firebaseConfig.apiKey.includes("SUA_API_KEY" )) {
+            console.error("ERRO: A configuração do Firebase está ausente. As funcionalidades de RSVP e Mural de Fotos estão desativadas.");
+            document.getElementById('rsvp-form').querySelector('button').disabled = true;
+            document.getElementById('photo-upload').disabled = true;
+            document.getElementById('loading-gallery').textContent = 'Funcionalidade de fotos indisponível. Configuração do Firebase pendente.';
+        } else {
+            const app = initializeApp(firebaseConfig);
+            const auth = getAuth(app);
+            const db = getFirestore(app);
+            const storage = getStorage(app);
+
+            signInAnonymously(auth).catch(error => console.error("Erro na autenticação anónima:", error));
+
+            onAuthStateChanged(auth, user => {
+                if (user) {
+                    // Se o usuário estiver autenticado, inicializa as funcionalidades
+                    setupRsvpForm(db);
+                    setupPhotoUpload(db, storage, user.uid);
+                    loadGuestPhotos(db);
+                }
+            });
+        }
+
+        // --- LÓGICA DA CONTAGEM REGRESSIVA COM FLIP ---
+        const weddingDate = new Date('2026-01-17T17:30:00-03:00');
+        const daysContainer = document.querySelector('[data-days-container]');
+        const hoursContainer = document.querySelector('[data-hours-container]');
+        const minutesContainer = document.querySelector('[data-minutes-container]');
+        const secondsContainer = document.querySelector('[data-seconds-container]');
+        let previousTime = {};
+
+        function flip(flipCard, newNumber) {
+            const topHalf = flipCard.querySelector(".top");
+            const bottomHalf = flipCard.querySelector(".bottom");
+            const startNumberText = topHalf.textContent;
+            if (Number(startNumberText) === newNumber) return;
+
+            const topFlip = document.createElement("div");
+            topFlip.classList.add("top-flip");
+            const bottomFlip = document.createElement("div");
+            bottomFlip.classList.add("bottom-flip");
+            
+            const isDaysCard = flipCard.classList.contains('days');
+            if (isDaysCard) {
+                flipCard.classList.toggle('two-digits', newNumber < 100);
+            }
+
+            const padLength = (isDaysCard && newNumber >= 100) ? 3 : 2;
+            const formattedStart = String(startNumberText).padStart(padLength, '0');
+            const formattedNew = String(newNumber).padStart(padLength, '0');
+
+            topFlip.textContent = formattedStart;
+            bottomFlip.textContent = formattedNew;
+
+            topFlip.addEventListener("animationstart", () => topHalf.textContent = formattedNew);
+            topFlip.addEventListener("animationend", () => topFlip.remove());
+            bottomFlip.addEventListener("animationend", () => {
+                bottomHalf.textContent = formattedNew;
+                bottomFlip.remove();
+            });
+
+            flipCard.append(topFlip, bottomFlip);
+        }
+
+        function updateAllCards() {
+            const now = new Date();
+            const distance = weddingDate - now;
+
+            if (distance <= 0) {
+                clearInterval(interval);
+                document.getElementById('countdown').innerHTML = "<div class='text-4xl font-script text-primary-green'>Felizes para Sempre!</div>";
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            if (daysContainer && previousTime.days !== days) flip(daysContainer, days);
+            if (hoursContainer && previousTime.hours !== hours) flip(hoursContainer, hours);
+            if (minutesContainer && previousTime.minutes !== minutes) flip(minutesContainer, minutes);
+            if (secondsContainer && previousTime.seconds !== seconds) flip(secondsContainer, seconds);
+
+            previousTime = { days, hours, minutes, seconds };
+        }
+
+        const interval = setInterval(updateAllCards, 1000);
+        updateAllCards(); // Executa uma vez imediatamente
+
+        // --- LÓGICA DO FORMULÁRIO RSVP ---
+        function setupRsvpForm(db) {
+            const rsvpForm = document.getElementById('rsvp-form');
+            if (!rsvpForm) return;
+            rsvpForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const guestNameInput = document.getElementById('guest-name');
+                const guestName = guestNameInput.value.trim();
+                if (!guestName) return;
+                const submitButton = rsvpForm.querySelector('button');
+                const feedbackElement = document.getElementById('rsvp-feedback');
+                
+                submitButton.disabled = true;
+                submitButton.textContent = 'A enviar...';
+                try {
+                    await addDoc(collection(db, 'confirmacoes'), {
+                        nome: guestName,
+                        confirmadoEm: serverTimestamp()
+                    });
+                    rsvpForm.reset();
+                    feedbackElement.textContent = `Obrigado por confirmar, ${guestName}! ✨`;
+                } catch (error) {
+                    console.error("Erro ao confirmar presença: ", error);
+                    feedbackElement.textContent = "Ocorreu um erro. Por favor, tente novamente.";
+                } finally {
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Confirmar Presença';
+                }
+            });
+        }
+
+        // --- LÓGICA DO MURAL DE FOTOS ---
+        function setupPhotoUpload(db, storage, userId) {
+            const photoInput = document.getElementById('photo-upload');
+            const uploadStatus = document.getElementById('upload-status');
+            if (!photoInput) return;
+            
+            photoInput.addEventListener('change', async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                if (!file.type.startsWith('image/')) {
+                    uploadStatus.textContent = 'Por favor, selecione um ficheiro de imagem.';
+                    return;
+                }
+                uploadStatus.textContent = 'A enviar foto... ⏳';
+                const filePath = `fotosConvidados/${Date.now()}-${file.name}`;
+                const storageRef = ref(storage, filePath);
+                try {
+                    const snapshot = await uploadBytes(storageRef, file);
+                    const downloadURL = await getDownloadURL(snapshot.ref);
+                    await addDoc(collection(db, 'fotosConvidados'), {
+                        url: downloadURL,
+                        criadoEm: serverTimestamp(),
+                        autorId: userId
+                    });
+                    uploadStatus.textContent = 'Foto enviada com sucesso! ✅';
+                } catch (error) {
+                    console.error("Erro ao enviar foto: ", error);
+                    uploadStatus.textContent = 'Erro ao enviar. Tente novamente.';
+                }
+            });
+        }
+
+        // --- LÓGICA PARA CARREGAR AS FOTOS NA GALERIA ---
+        function loadGuestPhotos(db) {
+            const gallery = document.getElementById('guest-photos-gallery');
+            const loadingMessage = document.getElementById('loading-gallery');
+            if (!gallery || !loadingMessage) return;
+
+            const q = query(collection(db, 'fotosConvidados'), orderBy('criadoEm', 'desc'));
+            onSnapshot(q, (snapshot) => {
+                loadingMessage.style.display = 'none';
+                gallery.innerHTML = ''; 
+                if (snapshot.empty) {
+                    gallery.innerHTML = '<p class="col-span-full text-center text-gray-500">Ainda não há fotos. Seja o primeiro a partilhar um registo!</p>';
+                } else {
+                    snapshot.forEach(doc => {
+                        const photo = doc.data();
+                        const imgElement = document.createElement('img');
+                        imgElement.src = photo.url;
+                        imgElement.alt = "Foto de convidado";
+                        gallery.appendChild(imgElement);
+                    });
+                }
+            }, (error) => {
+                console.error("Erro ao carregar fotos:", error);
+                loadingMessage.textContent = 'Não foi possível carregar as fotos.';
+            });
+        }
+    </script>
+    
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const galleryImages = document.querySelectorAll('.gallery-image');
+        const lightboxModal = document.getElementById('lightbox-modal');
+        const lightboxImage = document.getElementById('lightbox-image');
+        const lightboxClose = document.getElementById('lightbox-close');
+
+        if (!lightboxModal || !lightboxImage || !lightboxClose) return;
+
+        const openModal = (src) => {
+            lightboxImage.src = src;
+            lightboxModal.classList.remove('hidden');
+        };
+
+        const closeModal = () => {
+            lightboxModal.classList.add('hidden');
+        };
+
+        galleryImages.forEach(image => {
+            image.addEventListener('click', () => openModal(image.src));
+        });
+
+        lightboxClose.addEventListener('click', closeModal);
+        
+        lightboxModal.addEventListener('click', (e) => {
+            if (e.target === lightboxModal) {
+                closeModal();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !lightboxModal.classList.contains('hidden')) {
+                closeModal();
+            }
+        });
+      });
+    </script>
+</body>
+</html>
